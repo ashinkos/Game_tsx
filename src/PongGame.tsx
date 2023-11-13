@@ -7,7 +7,7 @@ const PongGame: React.FC = () => {
   const keysPressed: { [key: string]: boolean } = {};
   // const canvasRef = useRef<HTMLCanvasElement | null>(null);
   // const contextRef = useRef<CanvasRenderingContext2D | null>(null);
-
+  
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -16,6 +16,21 @@ const PongGame: React.FC = () => {
     if (!context) return;
 
     contextRef.current = context;
+
+    const updateCanvasSize = () => {
+      if (canvas) {
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        // Set canvas dimensions as a percentage of the window size
+        const canvasWidth = windowWidth * 0.8; // 80% of window width
+        const canvasHeight = windowHeight * 0.6; // 60% of window height
+
+        // Set canvas size
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
+      }
+    };
 
     // Set initial paddle and ball positions
     let paddle1Y = canvas.height / 2 - 60;
@@ -126,6 +141,12 @@ const PongGame: React.FC = () => {
       }
     };
 
+    // Initial setup
+    updateCanvasSize();
+
+    // Event listener for window resize
+    window.addEventListener('resize', updateCanvasSize);
+
     const animate = () => {
       movePaddles();
       draw();
@@ -138,10 +159,11 @@ const PongGame: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('resize', updateCanvasSize);
     };
   }, []);
 
-  return <canvas ref={canvasRef} width={800} height={600} style={{ border: '2px solid black' }} />;
+  return <canvas ref={canvasRef}  style={{ border: '5px solid black' }} />;
 };
 
 export default PongGame;
